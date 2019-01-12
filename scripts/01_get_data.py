@@ -4,10 +4,16 @@ from influxdb import DataFrameClient
 
 LAST_N_DAYS = 30
 
+
 # %% DATABASE CONNECTION
-client = DataFrameClient(host='openair.cologne.codefor.de/influx',
-                         port=443,
-                         database='lanuv')
+def get_db_client():
+    client_ = DataFrameClient(host='openair.cologne.codefor.de/influx',
+                              port=443,
+                              database='lanuv')
+    return client_
+
+
+client = get_db_client()
 
 # %% DATA FROM LANUV STATIONS
 
@@ -36,8 +42,9 @@ all_feeds = list(set([k[1][0][1] for k in feeds_dict.keys()]))
 
 
 # %% DATA FROM OPENAIR
-
-def query_openair(client_: DataFrameClient, last_n_days: int, feed_: str):
+def query_openair(last_n_days: int, feed_: str):
+    # get data
+    client_ = get_db_client()
     openair_dict = client_.query("SELECT "
                                  "median(hum) AS hum, median(pm10) AS pm10, "
                                  "median(pm25) AS pm25, median""(r1) AS r1, "
@@ -48,7 +55,8 @@ def query_openair(client_: DataFrameClient, last_n_days: int, feed_: str):
                                  "AND time <= now() "
                                  f"AND feed = '{feed_}' "
                                  "GROUP BY time(10m) fill(-1)")
-
+    client_.close()
+    # post-process
     df_openair = openair_dict['all_openair'] \
         .reset_index().rename(columns={'index': 'timestamp'}) \
         .assign(feed=lambda d: feed_)
@@ -57,7 +65,7 @@ def query_openair(client_: DataFrameClient, last_n_days: int, feed_: str):
 
 
 feed = all_feeds[0]
-df_feed = query_openair(client_=client, last_n_days=LAST_N_DAYS, feed_=feed)
+df_feed = query_openair(last_n_days=LAST_N_DAYS, feed_=feed)
 # TODO: query all feeds and concat Dataframes
 
 # %% CLOSE DATABASE CONNECTION
