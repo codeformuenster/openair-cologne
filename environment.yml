@@ -1,0 +1,9 @@
+name: openair-cologne
+
+dependencies:
+  - python=3.7
+  - matplotlib
+  - pandas
+  - seaborn
+  - pip:
+    - influxdb
