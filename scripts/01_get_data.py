@@ -1,6 +1,7 @@
 """Pull data from API and build data frame."""
 
 from influxdb import DataFrameClient
+import pandas as pd
 
 LAST_N_DAYS = 30
 
@@ -56,6 +57,8 @@ def query_openair(last_n_days: int, feed_: str):
                                  f"AND feed = '{feed_}' "
                                  "GROUP BY time(10m) fill(-1)")
     client_.close()
+    if 'all_openair' not in openair_dict.keys():
+        return pd.DataFrame()
     # post-process
     df_openair = openair_dict['all_openair'] \
         .reset_index().rename(columns={'index': 'timestamp'}) \
@@ -64,9 +67,15 @@ def query_openair(last_n_days: int, feed_: str):
     return df_openair
 
 
-feed = all_feeds[0]
-df_feed = query_openair(last_n_days=LAST_N_DAYS, feed_=feed)
-# TODO: query all feeds and concat Dataframes
+# initialize empty data frame
+df_feeds = pd.DataFrame()
+# fill data frame with data from all frames
+for feed in all_feeds:
+    df_feed = query_openair(last_n_days=LAST_N_DAYS, feed_=feed)
+    df_feeds = df_feeds.append(df_feed)
+
+# write as Parquet to disk
+df_feeds.to_parquet('data/df_lanuv.parquet')
 
 # %% CLOSE DATABASE CONNECTION
 client.close()
