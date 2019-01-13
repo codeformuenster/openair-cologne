@@ -46,4 +46,4 @@ for feed in list(openair_dict.keys()):
     df_openair = df_openair.append(df_feed)
 
 # write as Parquet to disk
-df_openair.to_parquet('data/df_lanuv.parquet')
+df_openair.to_parquet('data/df_openair.parquet')
