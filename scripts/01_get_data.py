@@ -14,9 +14,11 @@ lanuv_dict = query_influx("SELECT WTIME AS timestamp, station, NO2 AS no2 "
 
 # make clean data frame
 df_lanuv = lanuv_dict['lanuv_f2'] \
-    .reset_index(drop=True) \
-    .assign(timestamp=lambda d: pd.to_datetime(d.timestamp, unit='ms')) \
-    .assign(timestamp=lambda d: d.timestamp.dt.floor('10min'))
+    .assign(timestamp=lambda d: pd.to_datetime(d.timestamp,
+                                               unit='ms',
+                                               utc=True)) \
+    .assign(timestamp=lambda d: d.timestamp.dt.floor('10min')) \
+    .reset_index(drop=True)
 
 # write as Parquet to disk
 df_lanuv.to_parquet('data/df_lanuv.parquet')
