@@ -6,5 +6,6 @@ dependencies:
   - pandas
   - seaborn
   - pyarrow
+  - scikit-learn
   - pip:
     - influxdb
