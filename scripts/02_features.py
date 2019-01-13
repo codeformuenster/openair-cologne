@@ -12,10 +12,11 @@ df_lanuv = pd.read_parquet('data/df_lanuv.parquet') \
 
 df_openair = pd.read_parquet('data/df_openair.parquet') \
     .drop(columns=['pm10', 'pm25']) \
-    .query('r1 != -1 and r2 != -1')
+    .query('r1 != -1 and r2 != -1') \
+    .query('hum <= 100 and temp < 45')
 
 # %% JOIN DATA
 df_joined = pd.merge(df_lanuv, df_openair, how='inner', on=['timestamp'])
 
 # %% WRITE RESULT
-df_joined.to_parquet('data/features.parquet')
+df_joined.to_parquet('data/df_features.parquet')
