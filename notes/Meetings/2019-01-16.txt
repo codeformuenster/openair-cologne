@@ -7,7 +7,7 @@ Created Dienstag 15 Januar 2019
 
 Ideen für nächste Schritte:
 * Nicht alle Sensoren/Feeds modellieren
-	* Manche Sensoren buggy?
+	* Manche Sensoren buggy? -> Manuell filtern
 	* Insb. Sensoren mit räumlicher Nähe?
 * Fancy Idee: inverse Modellierung der Emissionsquellen - Kalibierung durch Sensordaten
 * Mehr Features
@@ -16,11 +16,10 @@ Ideen für nächste Schritte:
 	* (Physikalische) Theorie zu Zusammenhang zwischen Sensor und NO2? 
 		* was ist R_S und R_0 in Slidedeck?
 		* R1/R2 oder R2/R1?
-* 2 Modelle:
+* Mehr Daten -> was wäre sinnvoller, maximal langer Zeitraum?
+* 2-3 Modelle:
 	* ein lineares, erklärendes Modell: lineare Regression
 	* ein nichtlineares, maximal prediktives Modell: Entscheidungsbaum-Ensemble
+	* ggf. ein Spaßmodell: neuronales Netz
 
 Interkalibration mit LANUV-Stationen: Frank Reuer (frank.heuer@heuerhome.de)  hatte Erfolg in Dortmund
-
-Modellierungskonzept:
-
