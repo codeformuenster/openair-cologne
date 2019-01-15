@@ -11,5 +11,16 @@ Ideen für nächste Schritte:
 	* Insb. Sensoren mit räumlicher Nähe?
 * Fancy Idee: inverse Modellierung der Emissionsquellen - Kalibierung durch Sensordaten
 * Mehr Features
-	* Hängt davon ab, wie Vorhersagemodell genutzt werden soll
-	* (Physikalische) Theorie zu Zusammenhang zwischen Sensor und NO2? -> was ist R_S und R_0 in Slidedeck?
+	* Features hängen davon ab, wie Vorhersagemodell genutzt werden soll
+		* z.B. wenn Wochentage und Uhrzeit modelliert werden, könnte Information von Sensoren unter den Tisch fallen 
+	* (Physikalische) Theorie zu Zusammenhang zwischen Sensor und NO2? 
+		* was ist R_S und R_0 in Slidedeck?
+		* R1/R2 oder R2/R1?
+* 2 Modelle:
+	* ein lineares, erklärendes Modell: lineare Regression
+	* ein nichtlineares, maximal prediktives Modell: Entscheidungsbaum-Ensemble
+
+Interkalibration mit LANUV-Stationen: Frank Reuer (frank.heuer@heuerhome.de)  hatte Erfolg in Dortmund
+
+Modellierungskonzept:
+
