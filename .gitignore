@@ -3,5 +3,6 @@
 data/*
 !.gitkeep
 
-# pycharm
+# python
 .idea
+__pycache__
