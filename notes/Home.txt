@@ -1,0 +1,15 @@
+Content-Type: text/x-zim-wiki
+Wiki-Format: zim 0.4
+Creation-Date: 2019-01-15T20:14:25+01:00
+
+====== Home ======
+Created Dienstag 15 Januar 2019
+
+Ideen für nächste Schritte:
+* Nicht alle Sensoren/Feeds modellieren
+	* Manche Sensoren buggy?
+	* Insb. Sensoren mit räumlicher Nähe?
+* Fancy Idee: inverse Modellierung der Emissionsquellen - Kalibierung durch Sensordaten
+* Mehr Features
+	* Hängt davon ab, wie Vorhersagemodell genutzt werden soll
+	* (Physikalische) Theorie zu Zusammenhang zwischen Sensor und NO2? -> was ist R_S und R_0 in Slidedeck?
