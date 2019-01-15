@@ -1,8 +1,8 @@
 Content-Type: text/x-zim-wiki
 Wiki-Format: zim 0.4
-Creation-Date: 2019-01-15T20:14:25+01:00
+Creation-Date: 2019-01-15T20:24:19+01:00
 
-====== Home ======
+====== 2019-01-16 ======
 Created Dienstag 15 Januar 2019
 
 Ideen für nächste Schritte:
