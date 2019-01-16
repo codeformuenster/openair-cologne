@@ -29,9 +29,8 @@ Ideen für nächste Schritte:
 	* TODO: Openair-Monatsschnipsel ziehen, mit stündlicher Aggregation, in die Zukunft aggregiert
 * 2-3 Modelle:
 	* ~~TODO~~: ein lineares, erklärendes Modell: lineare Regression
-	* TODO: ein nichtlineares, maximal prediktives Modell: Entscheidungsbaum-Ensemble
-		* TODO: variable importance plotten
-		* TODO: beste vorhersagen auch zeitlich aggregiert plotten
+	* ~~TODO~~: ein nichtlineares, maximal prediktives Modell: Entscheidungsbaum-Ensemble
+		* ~~TODO~~: variable importance plotten
 	* ggf. ein Spaßmodell: neuronales Netz
 * Idee für Robustheit: predictions nicht nur basieren auf einem Wert, sondern auf gemittelter junger Vergangenheit (z.B. 5 Messungen)
 
