@@ -97,15 +97,17 @@ eval['rmse'] = eval.model.apply(
 print(eval)
 
 # %% VISUALIZE ERRORS
-model = 'lin_reg'
-
-df_pred = pd.DataFrame({'no2_cologne': model_y[model],
-                        'no2_pred': model_y_pred[model]})
+model_feed = {
+    'lin_reg': le.transform(df.feed),
+    'xgboost': df_test.feed_label,
+}
 
 for model in model_y_pred.keys():
     df_pred = pd.DataFrame({'no2_cologne': model_y[model],
-                            'no2_pred': model_y_pred[model]})
-    df_pred.plot.scatter(x='no2_cologne', y='no2_pred', s=0.5)
+                            'no2_pred': model_y_pred[model],
+                            'feed_label': model_feed[model]})
+    df_pred.plot.scatter(x='no2_cologne', y='no2_pred',
+                         c='feed_label', s=0.5, colormap='viridis')
     plt.plot([0, 80], [0, 80], linewidth=1, linestyle='dashed', color='red')
     plt.savefig(f'results/predictions_{model}.png', dpi=100)
     plt.close('all')
