@@ -10,6 +10,7 @@ Ideen für nächste Schritte:
 	* Manche Sensoren buggy? -> Manuell filtern
 	* Insb. Sensoren mit räumlicher Nähe?
 * Fancy Idee: inverse Modellierung der Emissionsquellen - Kalibierung durch Sensordaten
+	* -> Forschungszentrum Jülich hat das auf der langen Bank
 * Mehr Features
 	* Features hängen davon ab, wie Vorhersagemodell genutzt werden soll
 		* z.B. wenn Wochentage und Uhrzeit modelliert werden, könnte Information von Sensoren unter den Tisch fallen 
@@ -17,6 +18,8 @@ Ideen für nächste Schritte:
 		* was ist R_S und R_0 in Slidedeck?
 		* R1/R2 oder R2/R1?
 * Mehr Daten -> was wäre sinnvoller, maximal langer Zeitraum?
+	* Datenbank hat ca. 15 Monate
+	* TODO: Besser Monatsschnipsel ziehen
 * 2-3 Modelle:
 	* ein lineares, erklärendes Modell: lineare Regression
 	* ein nichtlineares, maximal prediktives Modell: Entscheidungsbaum-Ensemble
@@ -26,3 +29,4 @@ Interkalibration mit LANUV-Stationen: Frank Reuer (frank.heuer@heuerhome.de)  ha
 
 Info: 
 * LANUV-Sensoren geben aggregriete Durchschnittswerte der jeweils vergangenen Stunde
+	* TODO: Sensoren auf 1h aggregieren
