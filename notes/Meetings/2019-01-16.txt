@@ -5,27 +5,33 @@ Creation-Date: 2019-01-15T20:24:19+01:00
 ====== 2019-01-16 ======
 Created Dienstag 15 Januar 2019
 
+Ziele:
+* Welches Modell liefert die besten Vorhersagen und wie gut sind diese Werte (ggf. aggregiert)
+* Sehr gerne Vorheragen
+
 Ideen für nächste Schritte:
 * Nicht alle Sensoren/Feeds modellieren
 	* Manche Sensoren buggy? -> Manuell filtern
-	* Insb. Sensoren mit räumlicher Nähe?
+	* TODO: ergebnisse differenzieren nach einzelnen Sensoren (evtl. sind einzelne gut)
 * Fancy Idee: inverse Modellierung der Emissionsquellen - Kalibierung durch Sensordaten
 	* -> Forschungszentrum Jülich hat das auf der langen Bank
 * Mehr Features
-	* TODO: kein Dummy-Encoding der Variable "Feed"
+	* TODO: kein Dummy-Encoding der Variable "Feed" -> Label-Encoding
 	* Marcel stellt bereit:
 		* schickt noch Link zu API für  OPENAIR-Daten
 		* schickt Script-Link für Inversionswetterlage 
-	* Features hängen davon ab, wie Vorhersagemodell genutzt werden soll
-		* z.B. wenn Wochentage und Uhrzeit modelliert werden, könnte Information von Sensoren unter den Tisch fallen 
 	* (Physikalische) Theorie zu Zusammenhang zwischen Sensor und NO2? 
 		* Marcel schickt Datenblätter
+		* R1 und R2 sind separate Sensoren
+		* (R1 soll NO2 in sehr hohen Messwerten messen, R2 soll eigentlich CO messen) 
 * Mehr Daten -> was wäre sinnvoller, maximal langer Zeitraum?
 	* Datenbank hat ca. 15 Monate
 	* TODO: Openair-Monatsschnipsel ziehen, mit stündlicher Aggregation, in die Zukunft aggregiert
 * 2-3 Modelle:
 	* TODO: ein lineares, erklärendes Modell: lineare Regression
 	* TODO: ein nichtlineares, maximal prediktives Modell: Entscheidungsbaum-Ensemble
+		* TODO: variable importance plotten
+		* TODO: beste vorhersagen auch zeitlich aggregiert plotten
 	* ggf. ein Spaßmodell: neuronales Netz
 * Idee für Robustheit: predictions nicht nur basieren auf einem Wert, sondern auf gemittelter junger Vergangenheit (z.B. 5 Messungen)
 
