@@ -22,17 +22,20 @@ le.fit(pd.read_parquet('data/df_features.parquet').feed)
 df = pd.read_parquet('data/df_features.parquet') \
     .assign(feed_label=lambda d: le.transform(d.feed))
 
-# categorical encoding
-for column in COLS_CATEGORICAL:
-    dummies = pd.get_dummies(df[column], prefix=column + '_dummy')
-    df = df.join(dummies) \
-        .drop(columns=column)
-
 # %% APPLY LINEAR REGRESSION
 lin_reg = linear_model.LinearRegression(fit_intercept=False)
 
+
 # prepare data
-X = df.drop(columns=COL_TARGET).drop(columns=['timestamp'])
+X = df.drop(columns=['timestamp'])
+
+# dummy encoding
+for column in COLS_CATEGORICAL:
+    dummies = pd.get_dummies(X[column], prefix=column + '_dummy')
+    X = X.join(dummies) \
+        .drop(columns=column)
+
+X = X.drop(columns=COL_TARGET)
 y = df[COL_TARGET].values.ravel()
 
 # make CV predictions
@@ -49,8 +52,8 @@ pd.DataFrame({'variable': X.drop(columns=['feed_label']).columns,
 # %%  APPLY XGBOOST MODEL
 
 cutoff = df.timestamp.max() - pd.Timedelta('7d')
-df_train = df[df.timestamp < cutoff].drop(columns=['timestamp'])
-df_test = df[df.timestamp >= cutoff].drop(columns=['timestamp'])
+df_train = df[df.timestamp < cutoff].drop(columns=['timestamp', 'feed'])
+df_test = df[df.timestamp >= cutoff].drop(columns=['timestamp', 'feed'])
 
 X_train = df_train.drop(columns=COL_TARGET)
 X_test = df_test.drop(columns=COL_TARGET)
@@ -58,9 +61,8 @@ X_test = df_test.drop(columns=COL_TARGET)
 y_train = df_train[COL_TARGET]
 y_test = df_test[COL_TARGET]
 
-xgb_params = {'max_depth': 4,
+xgb_params = {'max_depth': 3,
               'eta': 0.1,
-              ''
               'objective': 'reg:linear',
               'silent': 1}
 
@@ -73,7 +75,7 @@ bst = xgboost.train(params=xgb_params,
                     verbose_eval=True)
 
 # plot feature importance
-xgboost.plot_importance(bst)
+xgboost.plot_importance(bst, importance_type='gain')
 plt.savefig(f'results/feature_importance.png', dpi=100)
 plt.close('all')
 
