@@ -2,32 +2,29 @@
 
 import math
 
-import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn import linear_model
-from sklearn.ensemble import GradientBoostingRegressor, RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import cross_val_predict
+from sklearn.preprocessing import LabelEncoder
 
 COLS_DROP = ['timestamp']
 COLS_CATEGORICAL = ['feed']
 COL_TARGET = ['no2_cologne']
 
-MODELS = {
-    'LinearRegression': linear_model.LinearRegression(fit_intercept=False),
-    'GradientBoostingRegressor': GradientBoostingRegressor(n_estimators=300),
-    'RandomForestRegressor': RandomForestRegressor(max_depth=8,
-                                                   n_estimators=100)
-}
 
 # %% LOAD DATA AND DROP COLUMNS
+le = LabelEncoder()
+le.fit(pd.read_parquet('data/df_features.parquet').feed)
+
 df = pd.read_parquet('data/df_features.parquet') \
-    .drop(columns=['timestamp'])
+    .drop(columns=['timestamp']) \
+    .assign(feed_label=lambda d: le.transform(d.feed))
 
 # categorical encoding
 for column in COLS_CATEGORICAL:
-    dummies = pd.get_dummies(df[column], prefix=column)
+    dummies = pd.get_dummies(df[column], prefix=column + '_dummy')
     df = df.join(dummies) \
         .drop(columns=column)
 
@@ -35,17 +32,18 @@ for column in COLS_CATEGORICAL:
 X = df.drop(columns=COL_TARGET)
 y = df[COL_TARGET].values.ravel()
 
-# %% TRAIN CROSS-VALIDATION
-model_y_pred = {model: cross_val_predict(MODELS[model], X, y, cv=10,
-                                         verbose=True, n_jobs=4)
-                for model in MODELS.keys()}
+# %% APPLY LINEAR REGRESSION
+lin_reg = linear_model.LinearRegression(fit_intercept=False)
 
-# %% STACKING: AVERAGE PREDICTIONS FROM ALL MODELS
+# make CV predictions
+model_y_pred = {'lin_reg': cross_val_predict(lin_reg, X, y, cv=100,
+                                             verbose=True, n_jobs=4)}
 
-model_y_pred['AllModels_mean'] = \
-    np.mean(np.array(list(model_y_pred.values())), axis=0)
-model_y_pred['AllModels_median'] = \
-    np.median(np.array(list(model_y_pred.values())), axis=0)
+# show parameters
+lin_reg.fit(X.drop(columns=['feed_label']), y)
+pd.DataFrame({'variable': X.drop(columns=['feed_label']).columns,
+              'weight': lin_reg.coef_}) \
+    .sort_values(by=['weight'])
 
 # %% QUANTIFY ERRORS
 eval = pd.DataFrame({'model': list(model_y_pred.keys())})
