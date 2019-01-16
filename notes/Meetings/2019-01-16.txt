@@ -12,6 +12,7 @@ Ideen für nächste Schritte:
 * Fancy Idee: inverse Modellierung der Emissionsquellen - Kalibierung durch Sensordaten
 	* -> Forschungszentrum Jülich hat das auf der langen Bank
 * Mehr Features
+	* TODO: kein Dummy-Encoding der Variable "Feed"
 	* Features hängen davon ab, wie Vorhersagemodell genutzt werden soll
 		* z.B. wenn Wochentage und Uhrzeit modelliert werden, könnte Information von Sensoren unter den Tisch fallen 
 	* (Physikalische) Theorie zu Zusammenhang zwischen Sensor und NO2? 
@@ -19,14 +20,14 @@ Ideen für nächste Schritte:
 		* R1/R2 oder R2/R1?
 * Mehr Daten -> was wäre sinnvoller, maximal langer Zeitraum?
 	* Datenbank hat ca. 15 Monate
-	* TODO: Besser Monatsschnipsel ziehen
+	* TODO: Openair-Monatsschnipsel ziehen, mit stündlicher Aggregation, in die Zukunft aggregiert
 * 2-3 Modelle:
-	* ein lineares, erklärendes Modell: lineare Regression
-	* ein nichtlineares, maximal prediktives Modell: Entscheidungsbaum-Ensemble
+	* TODO: ein lineares, erklärendes Modell: lineare Regression
+	* TODO: ein nichtlineares, maximal prediktives Modell: Entscheidungsbaum-Ensemble
 	* ggf. ein Spaßmodell: neuronales Netz
+* Idee für Robustheit: predictions nicht nur basieren auf einem Wert, sondern auf gemittelter junger Vergangenheit (z.B. 5 Messungen)
 
 Interkalibration mit LANUV-Stationen: Frank Reuer (frank.heuer@heuerhome.de)  hatte Erfolg in Dortmund
 
 Info: 
 * LANUV-Sensoren geben aggregriete Durchschnittswerte der jeweils vergangenen Stunde
-	* TODO: Sensoren auf 1h aggregieren
