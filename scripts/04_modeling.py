@@ -3,23 +3,23 @@
 import math
 
 import pandas as pd
+import xgboost
 from matplotlib import pyplot as plt
 from sklearn import linear_model
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.model_selection import cross_val_predict
 from sklearn.preprocessing import LabelEncoder
+from xgboost import DMatrix
 
 COLS_DROP = ['timestamp']
 COLS_CATEGORICAL = ['feed']
 COL_TARGET = ['no2_cologne']
-
 
 # %% LOAD DATA AND DROP COLUMNS
 le = LabelEncoder()
 le.fit(pd.read_parquet('data/df_features.parquet').feed)
 
 df = pd.read_parquet('data/df_features.parquet') \
-    .drop(columns=['timestamp']) \
     .assign(feed_label=lambda d: le.transform(d.feed))
 
 # categorical encoding
@@ -28,14 +28,15 @@ for column in COLS_CATEGORICAL:
     df = df.join(dummies) \
         .drop(columns=column)
 
-# %% SEPARATE FEATURE MATRIX FROM TARGET VECTOR
-X = df.drop(columns=COL_TARGET)
-y = df[COL_TARGET].values.ravel()
-
 # %% APPLY LINEAR REGRESSION
 lin_reg = linear_model.LinearRegression(fit_intercept=False)
 
+# prepare data
+X = df.drop(columns=COL_TARGET).drop(columns=['timestamp'])
+y = df[COL_TARGET].values.ravel()
+
 # make CV predictions
+model_y = {'lin_reg': y}
 model_y_pred = {'lin_reg': cross_val_predict(lin_reg, X, y, cv=100,
                                              verbose=True, n_jobs=4)}
 
@@ -45,20 +46,63 @@ pd.DataFrame({'variable': X.drop(columns=['feed_label']).columns,
               'weight': lin_reg.coef_}) \
     .sort_values(by=['weight'])
 
+# %%  APPLY XGBOOST MODEL
+
+cutoff = df.timestamp.max() - pd.Timedelta('7d')
+df_train = df[df.timestamp < cutoff].drop(columns=['timestamp'])
+df_test = df[df.timestamp >= cutoff].drop(columns=['timestamp'])
+
+X_train = df_train.drop(columns=COL_TARGET)
+X_test = df_test.drop(columns=COL_TARGET)
+
+y_train = df_train[COL_TARGET]
+y_test = df_test[COL_TARGET]
+
+xgb_params = {'max_depth': 4,
+              'eta': 0.1,
+              ''
+              'objective': 'reg:linear',
+              'silent': 1}
+
+bst = xgboost.train(params=xgb_params,
+                    dtrain=DMatrix(data=X_train, label=y_train),
+                    evals=[(DMatrix(data=X_train, label=y_train), 'train'),
+                           (DMatrix(data=X_test, label=y_test), 'test')],
+                    early_stopping_rounds=500,
+                    num_boost_round=10000,
+                    verbose_eval=True)
+
+# plot feature importance
+xgboost.plot_importance(bst)
+plt.savefig(f'results/feature_importance.png', dpi=100)
+plt.close('all')
+
+# make predictions
+xgb_pred = bst.predict(DMatrix(data=X_test, label=y_test),
+                       ntree_limit=bst.best_ntree_limit)
+model_y['xgboost'] = y_test.values.ravel()
+model_y_pred['xgboost'] = xgb_pred
+
 # %% QUANTIFY ERRORS
 eval = pd.DataFrame({'model': list(model_y_pred.keys())})
 
 eval['mae'] = eval.model.apply(
-    lambda model: mean_absolute_error(y, model_y_pred[model]))
+    lambda model: mean_absolute_error(model_y[model], model_y_pred[model]))
 eval['rmse'] = eval.model.apply(
-    lambda model: math.sqrt(mean_squared_error(y, model_y_pred[model])))
+    lambda model: math.sqrt(mean_squared_error(model_y[model],
+                                               model_y_pred[model])))
 
 print(eval)
 
 # %% VISUALIZE ERRORS
+model = 'lin_reg'
+
+df_pred = pd.DataFrame({'no2_cologne': model_y[model],
+                        'no2_pred': model_y_pred[model]})
+
 for model in model_y_pred.keys():
-    df_pred = df.assign(no2_pred=model_y_pred[model])
-    # df_pred = pd.DataFrame({'y_true': y, 'y_pred': model_y_pred[model]})
+    df_pred = pd.DataFrame({'no2_cologne': model_y[model],
+                            'no2_pred': model_y_pred[model]})
     df_pred.plot.scatter(x='no2_cologne', y='no2_pred', s=0.5)
     plt.plot([0, 80], [0, 80], linewidth=1, linestyle='dashed', color='red')
     plt.savefig(f'results/predictions_{model}.png', dpi=100)
