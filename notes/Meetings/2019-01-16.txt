@@ -40,4 +40,4 @@ Interkalibration mit LANUV-Stationen: Frank Reuer (frank.heuer@heuerhome.de)  ha
 Info: 
 * LANUV-Sensoren geben aggregriete Durchschnittswerte der jeweils vergangenen Stunde
 
-TODO: Luftmessungs-NGO in China recherchieren und an Marcel leiten
+~~TODO~~: Luftmessungs-NGO in China recherchieren und an Marcel leiten
