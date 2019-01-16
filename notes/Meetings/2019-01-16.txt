@@ -23,3 +23,6 @@ Ideen für nächste Schritte:
 	* ggf. ein Spaßmodell: neuronales Netz
 
 Interkalibration mit LANUV-Stationen: Frank Reuer (frank.heuer@heuerhome.de)  hatte Erfolg in Dortmund
+
+Info: 
+* LANUV-Sensoren geben aggregriete Durchschnittswerte der jeweils vergangenen Stunde
