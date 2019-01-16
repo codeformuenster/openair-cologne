@@ -28,7 +28,7 @@ Ideen für nächste Schritte:
 	* Datenbank hat ca. 15 Monate
 	* TODO: Openair-Monatsschnipsel ziehen, mit stündlicher Aggregation, in die Zukunft aggregiert
 * 2-3 Modelle:
-	* TODO: ein lineares, erklärendes Modell: lineare Regression
+	* ~~TODO~~: ein lineares, erklärendes Modell: lineare Regression
 	* TODO: ein nichtlineares, maximal prediktives Modell: Entscheidungsbaum-Ensemble
 		* TODO: variable importance plotten
 		* TODO: beste vorhersagen auch zeitlich aggregiert plotten
