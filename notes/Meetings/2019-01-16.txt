@@ -16,7 +16,7 @@ Ideen für nächste Schritte:
 * Fancy Idee: inverse Modellierung der Emissionsquellen - Kalibierung durch Sensordaten
 	* -> Forschungszentrum Jülich hat das auf der langen Bank
 * Mehr Features
-	* TODO: kein Dummy-Encoding der Variable "Feed" -> Label-Encoding
+	* ~~TODO~~: kein Dummy-Encoding der Variable "Feed" -> Label-Encoding
 	* Marcel stellt bereit:
 		* schickt noch Link zu API für  OPENAIR-Daten
 		* schickt Script-Link für Inversionswetterlage 
