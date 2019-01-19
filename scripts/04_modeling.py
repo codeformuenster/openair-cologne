@@ -51,7 +51,7 @@ pd.DataFrame({'variable': X.drop(columns=['feed_label']).columns,
 
 # %%  APPLY XGBOOST MODEL
 
-cutoff = df.timestamp.max() - pd.Timedelta('7d')
+cutoff = df.timestamp.max() - pd.Timedelta('30d')
 df_train = df[df.timestamp < cutoff].drop(columns=['timestamp', 'feed'])
 df_test = df[df.timestamp >= cutoff].drop(columns=['timestamp', 'feed'])
 
