@@ -3,6 +3,7 @@
 import math
 
 import pandas as pd
+import seaborn as sns
 import xgboost
 from matplotlib import pyplot as plt
 from sklearn import linear_model
@@ -97,16 +98,19 @@ print(metrics)
 
 # %% VISUALIZE ERRORS
 model_feed = {
-    'lin_reg': le.transform(df.feed),
-    'xgboost': df_test.feed_label,
+    'lin_reg': df.feed,
+    'xgboost': le.inverse_transform(df_test.feed_label),
 }
 
 for model in model_y_pred.keys():
     df_pred = pd.DataFrame({'no2_cologne': model_y[model],
                             'no2_pred': model_y_pred[model],
                             'feed_label': model_feed[model]})
-    df_pred.plot.scatter(x='no2_cologne', y='no2_pred',
-                         c='feed_label', s=0.5, colormap='viridis')
+    plot = sns.scatterplot(x='no2_cologne', y='no2_pred', hue='feed_label',
+                           alpha=0.5, data=df_pred, palette='colorblind',
+                           s=10)
+    plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0)
+    plt.tight_layout()
     plt.plot([0, 80], [0, 80], linewidth=1, linestyle='dashed', color='red')
-    plt.savefig(f'results/predictions_{model}.png', dpi=100)
+    plt.savefig(f'results/predictions_{model}.png', dpi=150)
     plt.close('all')
