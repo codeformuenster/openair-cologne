@@ -12,7 +12,7 @@ Ziele:
 Ideen für nächste Schritte:
 * Nicht alle Sensoren/Feeds modellieren
 	* Manche Sensoren buggy? -> Manuell filtern
-	* TODO: ergebnisse differenzieren nach einzelnen Sensoren (evtl. sind einzelne gut)
+	* ~~TODO~~: ergebnisse differenzieren nach einzelnen Sensoren (evtl. sind einzelne gut)
 * Fancy Idee: inverse Modellierung der Emissionsquellen - Kalibierung durch Sensordaten
 	* -> Forschungszentrum Jülich hat das auf der langen Bank
 * Mehr Features
@@ -26,7 +26,7 @@ Ideen für nächste Schritte:
 		* (R1 soll NO2 in sehr hohen Messwerten messen, R2 soll eigentlich CO messen) 
 * Mehr Daten -> was wäre sinnvoller, maximal langer Zeitraum?
 	* Datenbank hat ca. 15 Monate
-	* TODO: Openair-Monatsschnipsel ziehen, mit stündlicher Aggregation, in die Zukunft aggregiert
+	* ~~TODO~~: Openair-Monatsschnipsel ziehen, mit stündlicher Aggregation, in die Zukunft aggregiert
 * 2-3 Modelle:
 	* ~~TODO~~: ein lineares, erklärendes Modell: lineare Regression
 	* ~~TODO~~: ein nichtlineares, maximal prediktives Modell: Entscheidungsbaum-Ensemble

@@ -7,3 +7,9 @@ Created Mittwoch 16 Januar 2019
 
 Chinesische NGO zu Luftverschmutzung: http://www.fgylc.org/ — Website seit 2016 down
 
+Zeit in Tabelle lanuv_f2: zeitliche Bedeutung von Zeitindex, und von Feld WTIME ?
+	* Ist Zeitindex die angegebene Stunde auf Website? (das nimmt meine ETL-Pipeline aktuell an)
+	* Ist WTIME der Zeitpunkt zu dem der Scraper in Datenbank geschrieben hat?
+
+Ideen für nächste Schritte:
+	* Ausgewählte Messstationen zensieren (Kriterien: Lage, schlechter Modellzusammenhang) 
