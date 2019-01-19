@@ -25,7 +25,6 @@ df = pd.read_parquet('data/df_features.parquet') \
 # %% APPLY LINEAR REGRESSION
 lin_reg = linear_model.LinearRegression(fit_intercept=False)
 
-
 # prepare data
 X = df.drop(columns=['timestamp'])
 
@@ -86,15 +85,15 @@ model_y['xgboost'] = y_test.values.ravel()
 model_y_pred['xgboost'] = xgb_pred
 
 # %% QUANTIFY ERRORS
-eval = pd.DataFrame({'model': list(model_y_pred.keys())})
+metrics = pd.DataFrame({'model': list(model_y_pred.keys())})
 
-eval['mae'] = eval.model.apply(
-    lambda model: mean_absolute_error(model_y[model], model_y_pred[model]))
-eval['rmse'] = eval.model.apply(
-    lambda model: math.sqrt(mean_squared_error(model_y[model],
-                                               model_y_pred[model])))
+metrics['mae'] = metrics.model.apply(
+    lambda model_: mean_absolute_error(model_y[model_], model_y_pred[model_]))
+metrics['rmse'] = metrics.model.apply(
+    lambda model_: math.sqrt(mean_squared_error(model_y[model_],
+                                                model_y_pred[model_])))
 
-print(eval)
+print(metrics)
 
 # %% VISUALIZE ERRORS
 model_feed = {
