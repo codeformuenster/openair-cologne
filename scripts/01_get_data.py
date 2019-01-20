@@ -52,4 +52,3 @@ for feed in list(openair_dict_clean.keys()):
 # %% WRITE RESULTS
 df_lanuv.to_parquet('data/df_lanuv.parquet')
 df_openair.to_parquet('data/df_openair.parquet')
-
