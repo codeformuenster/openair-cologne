@@ -13,4 +13,5 @@ Zeit in Tabelle lanuv_f2: zeitliche Bedeutung von Zeitindex, und von Feld WTIME 
 
 Ideen für nächste Schritte:
 	* Ausgewählte Messstationen zensieren (Kriterien: Lage, schlechte Korrelationsmatrix, Vorhersagegüte) 
-	* XGBoost auf einzelnen feed separat trainieren, vorhersagen, und plotten
+
+XGBoost-Modell, das auf allen nicht zensierten Sensoren trainiert wurde, ist bisher nicht gut
