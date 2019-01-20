@@ -12,27 +12,31 @@ from sklearn.preprocessing import LabelEncoder
 
 COLS_DROP = ['timestamp']
 COLS_CATEGORICAL = ['feed']
-COL_TARGET = ['no2_cologne']
+COL_TARGET = 'no2_cologne'
 
 # %% LOAD DATA AND ENCODE CATEGORICAL COLUMNS
-le = LabelEncoder()
-le.fit(pd.read_parquet('data/df_features.parquet').feed)
+df = pd.read_parquet('data/df_features.parquet')
 
-df = pd.read_parquet('data/df_features.parquet') \
-    .assign(feed_label=lambda d: le.transform(d.feed))
+# %% ENCODING TO BOTH DUMMIES AND LABELS
+label_encoders = {}
 
-# dummy encoding
 for column in COLS_CATEGORICAL:
+    # make fitted label encoder perdistent in global dict
+    label_encoders[column] = LabelEncoder().fit(df[column])
+    # create dummy columns and label series
     dummies = pd.get_dummies(df[column], prefix=column + '_dummy')
-    df = df.join(dummies)
+    labels = label_encoders[column].transform(df[column])
+    # add encoding to data frame
+    df = df.join(dummies) \
+        .assign(feed_label=labels)
 
 # %% PARTITION DATA
 cutoff = df.timestamp.max() - pd.Timedelta('30d')
 df_train = df[df.timestamp < cutoff].drop(columns=['timestamp', 'feed'])
 df_test = df[df.timestamp >= cutoff].drop(columns=['timestamp', 'feed'])
 
-X_train = df_train.drop(columns=COL_TARGET)
-X_test = df_test.drop(columns=COL_TARGET)
+X_train = df_train.drop(columns=[COL_TARGET])
+X_test = df_test.drop(columns=[COL_TARGET])
 
 y_train = df_train[COL_TARGET]
 y_test = df_test[COL_TARGET]
@@ -62,7 +66,7 @@ xgb_params = {'max_depth': 3,
 
 xgb_reg = xgboost.XGBRegressor(**xgb_params)
 
-xgb_reg.fit(X_train, y_train.values,
+xgb_reg.fit(X_train, y_train,
             eval_set=[(X_train, y_train), (X_test, y_test)],
             eval_metric='rmse',
             early_stopping_rounds=100)
@@ -90,10 +94,12 @@ print(metrics)
 
 # %% VISUALIZE ERRORS
 for model in model_y_pred.keys():
-    df_pred = pd.DataFrame({'no2_cologne': y_test.values.ravel(),
-                            'no2_pred': model_y_pred[model],
-                            'feed_label':
-                                le.inverse_transform(X_test.feed_label)})
+    df_pred = pd.DataFrame({
+        'no2_cologne': y_test,
+        'no2_pred': model_y_pred[model],
+        'feed_label':
+            label_encoders['feed'].inverse_transform(X_test.feed_label)
+    })
     plot = sns.scatterplot(x='no2_cologne', y='no2_pred', hue='feed_label',
                            alpha=0.5, data=df_pred, palette='colorblind',
                            s=10)
