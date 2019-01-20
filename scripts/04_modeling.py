@@ -47,9 +47,10 @@ lin_reg = linear_model.LinearRegression(fit_intercept=False)
 # show parameters
 lin_reg.fit(X_train.drop(columns=['feed_label']), y_train)
 
-lin_reg_params = pd.DataFrame({'variable':
-                                   X_train.drop(columns=['feed_label']).columns,
-                               'weight': lin_reg.coef_.ravel()}) \
+lin_reg_params = pd.DataFrame({
+    'variable': X_train.drop(columns=['feed_label']).columns,
+    'weight': lin_reg.coef_.ravel()
+}) \
     .sort_values(by=['weight'])
 
 lin_reg_pred = lin_reg.predict(X_test.drop(columns=['feed_label'])).ravel()
