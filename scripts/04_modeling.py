@@ -14,8 +14,23 @@ COLS_DROP = ['timestamp']
 COLS_CATEGORICAL = ['feed']
 COL_TARGET = 'no2_cologne'
 
+FEED_BLACKLIST = [
+    '807f2c96',
+    '807f4d84',
+    '807f4f46',
+    '807f5dba',
+    '807f21ce',
+    '807f239a',
+    '807f273c',
+    '807f480c',
+    '807f2566',
+    '807f3056',
+    '807f7084',
+]
+
 # %% LOAD DATA AND ENCODE CATEGORICAL COLUMNS
-df = pd.read_parquet('data/df_features.parquet')
+df = pd.read_parquet('data/df_features.parquet') \
+    .query('feed not in @FEED_BLACKLIST')
 
 # %% ENCODING TO BOTH DUMMIES AND LABELS
 label_encoders = {}
@@ -53,7 +68,7 @@ lin_reg_params = pd.DataFrame({
 }) \
     .sort_values(by=['weight'])
 
-lin_reg_pred = lin_reg.predict(X_test.drop(columns=['feed_label'])).ravel()
+lin_reg_pred = lin_reg.predict(X=X_test.drop(columns=['feed_label'])).ravel()
 
 # %%  APPLY XGBOOST MODEL
 xgb_params = {'max_depth': 3,
