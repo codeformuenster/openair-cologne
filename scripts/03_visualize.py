@@ -29,6 +29,15 @@ plot_scatter = scatter_matrix(df, alpha=0.2, diagonal='kde')
 plt.savefig('results/scatterplot.png', dpi=200)
 plt.close('all')
 
+for feed in df.feed.unique():
+    # only one feed
+    df_feed = df.query(f'feed == "{feed}"')
+    if df_feed.shape[0] < 2: continue  # if not enough data, continue
+    # make scatterplot
+    plot_scatter = scatter_matrix(df_feed, alpha=0.2, diagonal='kde')
+    plt.savefig(f'results/scatterplot_{feed}.png', dpi=200)
+    plt.close('all')
+
 # %% TIME SERIES PLOTS
 
 feeds = df.feed.unique()
