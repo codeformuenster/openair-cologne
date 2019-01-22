@@ -49,6 +49,10 @@ for feed in list(openair_dict_clean.keys()):
         .rename_axis('timestamp').reset_index()
     df_openair = df_openair.append(df_feed)
 
+# shift timestamp one hour into the future
+df_openair_shifted = df_openair \
+    .assign(timestamp=lambda d: d.timestamp + pd.Timedelta('1h'))
+
 # %% WRITE RESULTS
 df_lanuv.to_parquet('data/df_lanuv.parquet')
-df_openair.to_parquet('data/df_openair.parquet')
+df_openair_shifted.to_parquet('data/df_openair.parquet')
