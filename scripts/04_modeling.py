@@ -28,9 +28,15 @@ FEED_BLACKLIST = [
     '807f7084',
 ]
 
+FEED_WHITELIST = [
+    '807f395c',
+    '807f49e2',
+]
+
 # %% LOAD DATA AND ENCODE CATEGORICAL COLUMNS
 df = pd.read_parquet('data/df_features.parquet') \
-    .query('feed not in @FEED_BLACKLIST')
+    .query('feed not in @FEED_BLACKLIST') \
+    .query('feed in @FEED_WHITELIST')
 
 # %% ENCODING TO BOTH DUMMIES AND LABELS
 label_encoders = {}
