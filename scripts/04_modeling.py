@@ -38,7 +38,7 @@ df = pd.read_parquet('data/df_features.parquet') \
     .query('feed not in @FEED_BLACKLIST') \
     .query('feed in @FEED_WHITELIST')
 
-# %% ENCODING TO BOTH DUMMIES AND LABELS
+# ENCODING TO BOTH DUMMIES AND LABELS
 label_encoders = {}
 
 for column in COLS_CATEGORICAL:
@@ -51,13 +51,15 @@ for column in COLS_CATEGORICAL:
     df = df.join(dummies) \
         .assign(feed_label=labels)
 
+df = df.drop(columns=COLS_CATEGORICAL)
+
 # %% PARTITION DATA
 cutoff = df.timestamp.max() - pd.Timedelta('30d')
-df_train = df[df.timestamp < cutoff].drop(columns=['timestamp', 'feed'])
-df_test = df[df.timestamp >= cutoff].drop(columns=['timestamp', 'feed'])
+df_train = df[df.timestamp < cutoff]
+df_test = df[df.timestamp >= cutoff]
 
-X_train = df_train.drop(columns=[COL_TARGET])
-X_test = df_test.drop(columns=[COL_TARGET])
+X_train = df_train.drop(columns=[COL_TARGET]).drop(columns=['timestamp'])
+X_test = df_test.drop(columns=[COL_TARGET]).drop(columns=['timestamp'])
 
 y_train = df_train[COL_TARGET]
 y_test = df_test[COL_TARGET]
@@ -115,18 +117,37 @@ metrics['rmse'] = metrics.model.apply(
 print(metrics)
 
 # %% VISUALIZE ERRORS
+df_pred = df_test \
+    .assign(no2_lin_reg=model_y_pred['lin_reg']) \
+    .assign(no2_xgb_reg=model_y_pred['xgb_reg']) \
+    .assign(feed_label=lambda d:
+label_encoders['feed'].inverse_transform(d.feed_label))
+
+# scatterplot of predictions
 for model in model_y_pred.keys():
-    df_pred = pd.DataFrame({
-        'no2_cologne': y_test,
-        'no2_pred': model_y_pred[model],
-        'feed_label':
-            label_encoders['feed'].inverse_transform(X_test.feed_label)
-    })
-    plot = sns.scatterplot(x='no2_cologne', y='no2_pred', hue='feed_label',
-                           alpha=0.5, data=df_pred, palette='colorblind',
+    plot = sns.scatterplot(x='no2_cologne',
+                           y=f'no2_{model}',
+                           hue='feed_label',
+                           alpha=0.5,
+                           data=df_pred,
+                           palette='colorblind',
                            s=10)
     plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0)
     plt.tight_layout()
     plt.plot([0, 80], [0, 80], linewidth=1, linestyle='dashed', color='red')
     plt.savefig(f'results/predictions_{model}.png', dpi=150)
+    plt.close('all')
+
+# lineplot as predictions
+df_long = pd.melt(frame=df_pred,
+                  id_vars=['timestamp', 'feed'],
+                  value_vars=['no2_cologne', 'no2_xgb_reg', 'no2_lin_reg'])
+
+for feed in df_long.feed.unique():
+    df_long_feed = df_long.query(f'feed == "{feed}"')
+    sns.lineplot(x="timestamp",
+                 y="value",
+                 hue="variable",
+                 data=df_long_feed)
+    plt.savefig(f'results/predictions_time_{feed}.png', dpi=150)
     plt.close('all')
