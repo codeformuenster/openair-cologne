@@ -28,15 +28,9 @@ FEED_BLACKLIST = [
     '807f7084',
 ]
 
-FEED_WHITELIST = [
-    '807f395c',
-    '807f49e2',
-]
-
 # %% LOAD DATA AND ENCODE CATEGORICAL COLUMNS
 df = pd.read_parquet('data/df_features.parquet') \
-    .query('feed not in @FEED_BLACKLIST') \
-    .query('feed in @FEED_WHITELIST')
+    .query('feed not in @FEED_BLACKLIST')
 
 # ENCODING TO BOTH DUMMIES AND LABELS
 label_encoders = {}
@@ -140,14 +134,14 @@ for model in model_y_pred.keys():
 
 # lineplot as predictions
 df_long = pd.melt(frame=df_pred,
-                  id_vars=['timestamp', 'feed'],
+                  id_vars=['timestamp', 'feed_label'],
                   value_vars=['no2_cologne', 'no2_xgb_reg', 'no2_lin_reg'])
 
-for feed in df_long.feed.unique():
-    df_long_feed = df_long.query(f'feed == "{feed}"')
+for feed_label in df_long.feed_label.unique():
+    df_long_feed = df_long.query(f'feed_label == "{feed_label}"')
     sns.lineplot(x="timestamp",
                  y="value",
                  hue="variable",
                  data=df_long_feed)
-    plt.savefig(f'results/predictions_time_{feed}.png', dpi=150)
+    plt.savefig(f'results/predictions_time_{feed_label}.png', dpi=150)
     plt.close('all')
